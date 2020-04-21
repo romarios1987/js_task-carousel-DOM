@@ -1,43 +1,38 @@
-
 'use strict';
 
-let slideIndex = 1;
-const previousButton = document.querySelector('.carousel__btn_prev');
+const container = document.querySelector('.container');
+const prevButton = document.querySelector('.carousel__btn_prev');
 const nextButton = document.querySelector('.carousel__btn_next');
+const list = container.querySelector('.carousel');
+const listElement = container.querySelectorAll('.carousel__item');
+let dot = document.querySelector('.carousel__dot');
+const width = 350;
+const count = 1;
+let position = 0;
 
-showSlides(slideIndex);
+prevButton.addEventListener('click', () => {
+  position += width * count;
+  position = Math.min(position, 0);
+  list.style.marginLeft = `${position}px`;
 
-function plusSlides(n) {
-  showSlides(slideIndex += n);
-}
-
-previousButton.addEventListener('click', () => {
-  plusSlides(-1);
+  if (!dot.previousElementSibling) {
+    return;
+  }
+  dot.className = 'carousel__dot';
+  dot = dot.previousElementSibling;
+  dot.classList.add('carousel__dot_active');
 });
 
 nextButton.addEventListener('click', () => {
-  plusSlides(1);
+  position -= width * count;
+  position = Math.max(position, -width * (listElement.length - count));
+  list.style.marginLeft = `${position}px`;
+  list.style.transition = 'margin-left 0.5s';
+
+  if (!dot.nextElementSibling) {
+    return;
+  }
+  dot.className = 'carousel__dot';
+  dot = dot.nextElementSibling;
+  dot.classList.add('carousel__dot_active');
 });
-
-function showSlides(n) {
-  const slides = document.querySelectorAll('.twitter-card');
-  const dots = document.querySelectorAll('.carousel__dot');
-
-  if (n > slides.length) {
-    slideIndex = 1;
-  }
-
-  if (n < 1) {
-    slideIndex = slides.length;
-  }
-
-  for (let i = 0; i < slides.length; i++) {
-    slides[i].style.display = 'none';
-  }
-
-  for (let i = 0; i < dots.length; i++) {
-    dots[i].classList.remove('carousel__dot_active');
-  }
-  slides[slideIndex - 1].style.display = 'block';
-  dots[slideIndex - 1].classList.add('carousel__dot_active');
-}
